@@ -1,16 +1,23 @@
 "use strict";
 const nameIn = document.querySelector('#name');
+const emailIn = document.querySelector('#email');
+const activitiesFieldset = document.querySelector('#activities');
+const ccNumIn = document.querySelector('#cc-num');
+const zipIn = document.querySelector('#zip');
+const cvvIn = document.querySelector('#cvv');
+  //.name
+  //.email
+  //.activities
+  //.cc-num
+  //.zip
+  //.cvv
+
 const otherJobRolIn = document.querySelector('#other-job-role');
 const titleSel = document.querySelector('#title');
 const shirtDesignSel = document.querySelector('#design');
 const shirtColorsSel = document.querySelector('#color');
-const activitiesFieldset = document.querySelector('#activities');
 const paymentSel = document.querySelector('#payment');
 const creditPayOpt = document.querySelector('[value="credit-card"')
-const hintDispEles = document.querySelectorAll('[id$="-hint"]')
-// const hintEles = inElements.querySelectorAll(`#${/^(.+)(-hint){1}$/.exec(inElements.id)}`);
-//console.log(hintDispEles);
-
 
 nameIn.focus();
 otherJobRolIn.style.display = 'none';
@@ -20,7 +27,7 @@ setPaymentMeth(creditPayOpt);
 
 /***
  * 
-***/
+ ***/
 function setPaymentMeth(obj) {
   const selectedPayment = (!obj.value)? obj.target.value: obj.value;
   const paymentMethods = document.querySelectorAll('.credit-card, .paypal, .bitcoin');
@@ -30,6 +37,8 @@ function setPaymentMeth(obj) {
     : 'none';
   }
 }
+
+paymentSel.addEventListener('change', setPaymentMeth);
 
 titleSel.addEventListener('change', (e) => {
   otherJobRolIn.style.display = (e.target.value === 'other')? '': 'none';
@@ -49,18 +58,37 @@ function convStartEndTime24hr(arr) {
   arr[3] = (/^[1-9][01]?pm$/.test(arr[3]))? +(arr[3]).match(/\d+/) + 12: +arr[3].match(/\d+/);
 }
 
-function disableActivies(node) {
+function clearDisabledActivies(node) {
   node.forEach((v) => {
     v.disabled = false;
-    v.parentNode.style.opacity = 1;
+    v.parentNode.classList.remove('disabled');
    });
 }
 
 activitiesFieldset.addEventListener('change', (e) => {
+  const fieldset = e.currentTarget;
+  const activityParent = e.target.parentElement;
   const activitiesIn = activitiesFieldset.querySelectorAll('input');
   const activitiesChecked = activitiesFieldset.querySelectorAll('[type="checkbox"]:checked');
+  const activityHint = document.querySelector('#activities-hint');
   const attrb = 'data-day-and-time';
-  disableActivies(activitiesIn);
+
+  if(activitiesChecked.length === 0) {
+    fieldset.classList.add('not-valid');
+    fieldset.classList.remove('valid');
+    activityHint.style.display = '';
+  }
+    else {
+      fieldset.classList.add('valid');
+      fieldset.classList.remove('not-valid');
+      activityHint.style.display = 'none';
+    }
+  clearDisabledActivies(activitiesIn);
+  if(activityParent.classList.contains('focus')) 
+    activityParent.classList.remove('focus');
+    else
+      activityParent.classList.add('focus');
+  
 
   activitiesChecked.forEach((chkd) => {
     if(chkd.hasAttribute(attrb)) {
@@ -76,46 +104,40 @@ activitiesFieldset.addEventListener('change', (e) => {
             if((chkdComp[2] <= newComp[2] && chkdComp[3] >= newComp[2]) ||
               (chkdComp[2] <= newComp[3] && chkdComp[3] >= newComp[3])) {
                toChk.disabled = true;
-               toChk.parentNode.style.opacity = .25;
+               toChk.parentNode.classList.add('disabled');
             }
           }
         }
       });
     }
   });
-  const activitiesTime = '';
+
   const activitiesCostSpan = activitiesFieldset.querySelector('#activities-cost');
   const activitiesTotal = Object.entries(activitiesIn).reduce((acc,v) => 
     acc += v[1].checked && +v[1].getAttribute('data-cost'),0);
   activitiesCostSpan.textContent = `Total: $${activitiesTotal}`;
 });
 
-paymentSel.addEventListener('change', setPaymentMeth);
+function isMthYr(e) {
+  const select = e.currentTarget;
+  const isSelected = select.selectedIndex;
+  const selParent = select.parentElement;
+  if(isSelected > 0) {
+    select.classList.remove('error');
+    selParent.classList.remove('not-valid');
+    selParent.classList.add('valid');
+  };
+}
+document.querySelector('#exp-month').addEventListener('change', isMthYr);
+document.querySelector('#exp-year').addEventListener('change', isMthYr);
+
+
 
 
 /**-----------------------
  * *      Toggle Hints
- * 
- *  
- *  
  *------------------------**/
 
-function toggleHints(e) {
-  const fieldset = e.currentTarget;
-  const formHints = fieldset.querySelectorAll('.hint');
-  Object.entries(formHints).forEach((v) => {
-    v[1].style.display = (e.type === 'focusin')
-    ? 'inherit' :
-    '';
-  });
-}
-
-// document.querySelector('.basic-info').addEventListener('focusin', toggleHints);
-// document.querySelector('.basic-info').addEventListener('focusout', toggleHints);
-// document.querySelector('.activities').addEventListener('focusin', toggleHints);
-// document.querySelector('.activities').addEventListener('focusout', toggleHints);
-// document.querySelector('.payment-methods').addEventListener('focusin', toggleHints);
-// document.querySelector('.payment-methods').addEventListener('focusout', toggleHints);
 
 const helperHints = [
   {
@@ -132,11 +154,23 @@ const helperHints = [
     textContent: 'Please enter well formated Email: user@domain.com',
     regExp: /^[\w+-]+(\.[\w]+)*@[\w-]+\.\w{2,4}$/i
   },
-  // {
-  //   id: 'activities',
-  //   hintId: 'activities-hint',
-  //   textContent: 'Select Activities that are free of running time conflicts',
-  //   regExp: ''},
+  {
+    id: 'activities',
+    type: 'checkbox',
+    hintId: 'activities-hint',
+    textContent: 'Choose at least one activity',
+    regExp: /\d+/
+  },
+  {
+    id: 'exp-month',
+    type: 'select',
+    regExp: /\d+/
+  },
+  {
+    id: 'exp-year',
+    type: 'select',
+    regExp: /\d+/
+  },
   {
     id: 'cc-num',
     type: 'input',
@@ -164,24 +198,35 @@ function toggleHint(e) {
   const id = e.currentTarget.id;
   const hintObj = helperHints.find((v) => v.id === id);
   const hintEle = document.querySelector(`#${hintObj.hintId}`);
-  console.log(e.currentTarget);
   e.currentTarget.setAttribute('autocomplete', 'off');
-  //const orgHintVal = hintEle.textContent;
    if(hintObj.regExp.test(e.currentTarget.value)) {
-     hintEle.classList.add('hint');
-     //hintEle.classList.add('valid');
+     if(hintEle){
+     hintEle.parentElement.classList.add('valid');
+     hintEle.parentElement.classList.remove('not-valid');
+     e.currentTarget.classList.remove('error')
+     hintEle.style.display = 'none';
    } else {
-    hintEle.textContent = hintObj.textContent;
-    hintEle.classList.remove('hint');
+     e.currentTarget.parentElement.classList.remove('not-valid');
+     e.currentTarget.classList.add('error');
+    }
+   } else {
+      if(hintEle) {
+        hintEle.textContent = hintObj.textContent;
+        hintEle.style.display = '';
+        hintEle.parentElement.classList.add('not-valid');
+        hintEle.parentElement.classList.remove('valid');
+        e.currentTarget.classList.add('error');
+      } else {
+     e.currentTarget.parentElement.classList.add('not-valid');
+     e.currentTarget.classList.remove('error');
    }
+  }
 }
 
 helperHints.forEach((v) => {
-  document.querySelector(`#${v.id}`).addEventListener('keyup', toggleHint);
+  if(v.type === 'input')
+    document.querySelector(`#${v.id}`).addEventListener('keyup', toggleHint);
 }); 
-// nameIn.addEventListener('keyup', toggleHint);
-// emailIn.addEventListener('keyup', toggleHint);
-
 
  /**------------------------------------------------------------------------
  * *                                INFO
@@ -190,32 +235,47 @@ helperHints.forEach((v) => {
 
 function processForm(e) {
   e.preventDefault();
-
-  //.basic-info
-  //.shirts
-  //.activities
-  //payment-methods
+  const isFormValid = helperHints.every((v) => {
+    const hintEle = document.querySelector(`#${v.hintId}`);
+    switch(v.type) {
+      case 'input':
+        const input = document.querySelector(`#${v.id}`);
+        if(!v.regExp.test(input.value)) {
+          hintEle.textContent = v.id.textContent;
+          hintEle.style.display = '';
+          input.classList.add('error');
+          hintEle.parentElement.classList.add('not-valid');
+          input.focus();
+          return false;
+        }
+        return true;
+      break;
+      case 'checkbox':
+        const fieldset = document.querySelector(`#${v.id}`);
+        const checkBoxes = fieldset.querySelectorAll('[type="checkbox"]');
+        if(!(Object.entries(checkBoxes).some((v) => v[1].checked))) {
+          hintEle.textContent = v.id.textContent;
+          hintEle.style.display = '';
+          fieldset.classList.add('error');
+          hintEle.parentElement.classList.add('not-valid');
+          checkBoxes[0].focus();
+          return false;
+        }
+        return true;
+      break;
+      case 'select':
+        const select = document.querySelector(`#${v.id}`);
+        if(select.selectedIndex <= 0) {
+          select.classList.add('error');
+          select.parentElement.classList.add('not-valid');
+          select.focus();
+          return false
+        }
+        return true;
+      break;
+    }
+  });
+  return (isFormValid)? alert('good form'): false;
 }
 
  document.querySelector('form').addEventListener('submit', processForm);
-
- function isValBasicInfo() {
-  /**============================================
-   **Name, Email Address, Job info
-   *=============================================**/
-  isName = /^([a-zA-Z-]+)( [a-zA-Z-]+)*$/.test(document.querySelector('.name').value);
-  isEmail = /^[\w+-]+(\.[\w]+)*@[\w-]+\.\w{2,4}$/i.test(document.querSelector('email').value);
-  isJobInfo = /^\w+$/i.test(otherJobRolIn.value);
- }
-
- function isValShirts() {
-
-}
-
-function isValActivities() {
-
-}
-
-function isValPayment() {
-
-}
