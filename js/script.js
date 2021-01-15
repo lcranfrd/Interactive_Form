@@ -24,7 +24,7 @@ const helperHints = [
     type: 'input',
     hintId: 'name-hint',
     liveCheckTextContent: 'Please enter First Name and Last Name (last name hyphen accepted)',
-    validateTextContent: 'Name field cannot be blank',
+    submitTextContent: 'Name field cannot be blank',
     regExp: /^([a-zA-Z-]+)( [a-zA-Z]{2,})(-[a-zA-Z]{2,})?$/i
   },
   {
@@ -32,7 +32,7 @@ const helperHints = [
     type: 'input',
     hintId: 'email-hint',
     liveCheckTextContent: 'Please enter well formated Email ex: user@domain.com',
-    validateTextContent: 'Email address must be formatted correctly',
+    submitTextContent: 'Email address must be formatted correctly',
     regExp: /^[\w+-]+(\.[\w]+)*@[\w-]+\.\w{2,4}$/i
   },
   {
@@ -40,7 +40,7 @@ const helperHints = [
     type: 'checkbox',
     hintId: 'activities-hint',
     liveCheckTextContent: 'Choose at least one activity',
-    validateTextContent: 'Choose at least one activity',
+    submitTextContent: 'Choose at least one activity',
     regExp: /\d+/
   },
   {
@@ -58,7 +58,7 @@ const helperHints = [
     type: 'input',
     hintId: 'cc-hint',
     liveCheckTextContent: 'Number must be 13 - 16 digits in length. Spaces and dashes are permitted',
-    validateTextContent: 'Credit card number must be between 13 - 16 digits',
+    submitTextContent: 'Credit card number must be between 13 - 16 digits',
     regExp: /^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$/
   },
   {
@@ -66,7 +66,7 @@ const helperHints = [
     type: 'input',
     hintId: 'zip-hint',
     tliveCheckTextContent: 'Zip Code must contain 5 digits',
-    validateTextContent: 'Zip Code must contain 5 digits',
+    submitTextContent: 'Zip Code must contain 5 digits',
     regExp: /^\d{5}$/
   },
   {
@@ -74,7 +74,7 @@ const helperHints = [
     type: 'input',
     hintId: 'cvv-hint',
     liveCheckTextContent: 'CVV must contain 3 digits',
-    validateTextContent: 'CVV must contain 3 digits',
+    submitTextContent: 'CVV must contain 3 digits',
     regExp: /^\d{3}$/
   }
 ];
@@ -345,7 +345,7 @@ function processForm(e) {
       case 'input':
         const input = document.querySelector(`#${v.id}`);
         if(!v.regExp.test(input.value)) {
-          hintEle.textContent = v.validateTextContent;
+          hintEle.textContent = v.submitTextContent;
           hintEle.style.display = 'inherit';
           input.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
@@ -359,7 +359,7 @@ function processForm(e) {
         const fieldset = document.querySelector(`#${v.id}`);
         const checkBoxes = fieldset.querySelectorAll('[type="checkbox"]');
         if(!(Object.entries(checkBoxes).some((v) => v[1].checked))) {
-          hintEle.textContent = v.validateTextContent;
+          hintEle.textContent = v.submitTextContent;
           hintEle.style.display = 'inherit';
           fieldset.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
