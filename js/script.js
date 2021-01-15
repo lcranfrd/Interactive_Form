@@ -245,7 +245,6 @@ helperHints.forEach((v) => {
  *------------------------------------------------------------------------**/
 
 function processForm(e) {
-  // e.preventDefault();
   const isFormValid = helperHints.every((v) => {
     const hintEle = document.querySelector(`#${v.hintId}`);
     switch(v.type) {
@@ -277,14 +276,19 @@ function processForm(e) {
         return true;
       break;
       case 'select':
+        // const payFieldset = document.querySelector('.activities');
+        const paymentMethIndx = document.querySelector('.payment').selectedIndex;
         const select = document.querySelector(`#${v.id}`);
-        if(select.selectedIndex <= 0) {
-          select.classList.add('error');
-          select.parentElement.classList.add('not-valid');
-          e.preventDefault();
-          select.focus();
-          return false
+        if(paymentMethIndx > 0) {
+          if(select.selectedIndex <= 0) {
+            select.classList.add('error');
+            select.parentElement.classList.add('not-valid');
+            e.preventDefault();
+            select.focus();
+            return false
+          }
         }
+        // payFieldset.classList.add('valid');
         return true;
       break;
     }
