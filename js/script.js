@@ -370,9 +370,9 @@ function processForm(e) {
         return true;
       break;
       case 'select':
-        const paymentMethIndx = document.querySelector('.payment').selectedIndex;
+        const paymentMethIndx = document.querySelector('#payment').selectedIndex;
         const select = document.querySelector(`#${v.id}`);
-        if(paymentMethIndx > 0) {
+        if(paymentMethIndx === 1) {
           if(select.selectedIndex <= 0) {
             select.classList.add('error');
             select.parentElement.classList.add('not-valid');
