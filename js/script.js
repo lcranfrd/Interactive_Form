@@ -84,11 +84,6 @@ activitiesFieldset.addEventListener('change', (e) => {
       activityHint.style.display = 'none';
     }
   clearDisabledActivies(activitiesIn);
-  if(activityParent.classList.contains('focus')) 
-    activityParent.classList.remove('focus');
-    else
-      activityParent.classList.add('focus');
-  
 
   activitiesChecked.forEach((chkd) => {
     if(chkd.hasAttribute(attrb)) {
@@ -112,11 +107,25 @@ activitiesFieldset.addEventListener('change', (e) => {
     }
   });
 
+
+
   const activitiesCostSpan = activitiesFieldset.querySelector('#activities-cost');
   const activitiesTotal = Object.entries(activitiesIn).reduce((acc,v) => 
     acc += v[1].checked && +v[1].getAttribute('data-cost'),0);
   activitiesCostSpan.textContent = `Total: $${activitiesTotal}`;
 });
+
+function focusActivityLabels(e) {
+  (e.type === 'focus') 
+    ? e.target.parentElement.classList.add('focus')
+    : e.target.parentElement.classList.remove('focus');
+}
+
+  const checkEles = document.querySelectorAll('[type="checkbox"]');
+  checkEles.forEach((v) => v.addEventListener('focus', focusActivityLabels));
+  checkEles.forEach((v) => v.addEventListener('blur', focusActivityLabels));
+
+
 
 function isMthYr(e) {
   const select = e.currentTarget;
@@ -195,37 +204,39 @@ const helperHints = [
 ]
 
 function toggleHint(e) {
-  const id = e.currentTarget.id;
-  const hintObj = helperHints.find((v) => v.id === id);
+  if(e.keyCode === 9) return false;
+  const hintObj = helperHints.find((v) => v.id === e.currentTarget.id);
   const hintEle = document.querySelector(`#${hintObj.hintId}`);
-  e.currentTarget.setAttribute('autocomplete', 'off');
-   if(hintObj.regExp.test(e.currentTarget.value)) {
-     if(hintEle){
-     hintEle.parentElement.classList.add('valid');
-     hintEle.parentElement.classList.remove('not-valid');
-     e.currentTarget.classList.remove('error')
-     hintEle.style.display = 'none';
-   } else {
-     e.currentTarget.parentElement.classList.remove('not-valid');
-     e.currentTarget.classList.add('error');
+  if(hintObj.regExp.test(e.currentTarget.value)) {
+    if(hintEle){
+      hintEle.parentElement.classList.add('valid');
+      hintEle.parentElement.classList.remove('not-valid');
+      e.currentTarget.classList.remove('error')
+      hintEle.style.display = 'none';
+    } else {
+      e.currentTarget.parentElement.classList.remove('not-valid');
+      e.currentTarget.classList.add('error');
     }
-   } else {
-      if(hintEle) {
-        hintEle.textContent = hintObj.textContent;
-        hintEle.style.display = '';
-        hintEle.parentElement.classList.add('not-valid');
-        hintEle.parentElement.classList.remove('valid');
-        e.currentTarget.classList.add('error');
-      } else {
-     e.currentTarget.parentElement.classList.add('not-valid');
-     e.currentTarget.classList.remove('error');
-   }
+  } else {
+    if(hintEle) {
+      hintEle.textContent = hintObj.textContent;
+      hintEle.parentElement.classList.add('not-valid');
+      hintEle.parentElement.classList.remove('valid');
+      e.currentTarget.classList.add('error');
+      hintEle.style.display = 'inherit';
+    } else {
+      e.currentTarget.parentElement.classList.add('not-valid');
+      e.currentTarget.classList.remove('error');
+    }
   }
 }
 
 helperHints.forEach((v) => {
-  if(v.type === 'input')
-    document.querySelector(`#${v.id}`).addEventListener('keyup', toggleHint);
+  if(v.type === 'input') {
+  const input = document.querySelector(`#${v.id}`)
+  input.addEventListener('input', toggleHint);
+  input.setAttribute('autocomplete', 'off');
+}
 }); 
 
  /**------------------------------------------------------------------------
@@ -234,7 +245,7 @@ helperHints.forEach((v) => {
  *------------------------------------------------------------------------**/
 
 function processForm(e) {
-  e.preventDefault();
+  // e.preventDefault();
   const isFormValid = helperHints.every((v) => {
     const hintEle = document.querySelector(`#${v.hintId}`);
     switch(v.type) {
@@ -245,6 +256,7 @@ function processForm(e) {
           hintEle.style.display = '';
           input.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
+          e.preventDefault();
           input.focus();
           return false;
         }
@@ -258,6 +270,7 @@ function processForm(e) {
           hintEle.style.display = '';
           fieldset.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
+          e.preventDefault();
           checkBoxes[0].focus();
           return false;
         }
@@ -268,6 +281,7 @@ function processForm(e) {
         if(select.selectedIndex <= 0) {
           select.classList.add('error');
           select.parentElement.classList.add('not-valid');
+          e.preventDefault();
           select.focus();
           return false
         }
@@ -275,7 +289,7 @@ function processForm(e) {
       break;
     }
   });
-  return (isFormValid)? alert('good form'): false;
+  return (isFormValid)? true: false;
 }
 
  document.querySelector('form').addEventListener('submit', processForm);
