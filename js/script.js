@@ -1,14 +1,22 @@
+/**------------------------------------------------------------------------
+ * ?                                ABOUT
+ * @author         :  L. Bennett Crantford
+ * @email          :  lcranfrd@comcast.net
+ * @repo           :  https://github.com/lcranfrd/Interactive_Form.git
+ * @createdOn      :  1/15/2021
+ * @description    :  TreeHouse FS TechDegree Project #3
+ * @description    :  Interactive Form
+ *------------------------------------------------------------------------**/
+
 "use strict";
 
-/**==============================================
- * *                   HelperHints
- *   array of objects used to set helper hints
- *   and validate form submission. Its types are
- *   determined through the required form input
- *   types. Those that have cooresponding hints
- *   will have rexexp values and textContent for
- *   input validation and hint display.
- *=============================================**/
+/**------------------------------------------------------------------------
+ * *                                HelperHints
+ *   array of objects used to set helper hints and validate form submission.
+ *   Its types are determined through the required form input types. Those
+ *   that have cooresponding hints will have rexexp values and textContent
+ *   for input validation and hint display.
+ *------------------------------------------------------------------------**/
 
 const helperHints = [
   {
@@ -86,16 +94,16 @@ creditPayOpt.selected = true;
 setPaymentMeth(creditPayOpt);
 
 
-/**======================
- **   setPaymentMeth
- * Will set the default behaviour of the Payment Methods.
- * Will show the elements associated with the users choice.
- * Function will be first called with a default setting after which
- * will be called by eventListen change on the payment Selector
- * 
+/**========================================================================
+ **                           setPaymentMeth
+ *?  Will set the default behaviour of the Payment Methods.
+ *?  Will show the elements associated with the users choice.
+ *?  Function will be first called with a default setting after which
+ *?  will be called by eventListen change on the payment Selector
  *@param obj HTMLElement value 
  *@return null
- *========================**/
+ *========================================================================**/
+
 
 function setPaymentMeth(obj) {
   const selectedPayment = (!obj.value)? obj.target.value: obj.value;
@@ -109,11 +117,10 @@ function setPaymentMeth(obj) {
 
 paymentSel.addEventListener('change', setPaymentMeth);
 
+/**------------------------------------------------------------------------
+ * *                   Job Role and T-Shirt Info Behavious
+ *------------------------------------------------------------------------**/
 
-/**==============================================
- *                Set Default Behaviour
- * For Job Role and T-Shirt Info
- *=============================================**/
 titleSel.addEventListener('change', (e) => {
   otherJobRolIn.style.display = (e.target.value === 'other')? '': 'none';
 });
@@ -128,30 +135,30 @@ shirtDesignSel.addEventListener('change', (e) => {
 });
 
 /**------------------------------------------------------------------------
- **                            Set Behavious for Activites
+ **                       Set Behavious for Activites
  *------------------------------------------------------------------------**/  
 
-/**==============================================
- **              convStartEndTime24
- *?  convert 2 string elements in passed array
- *?  to number representing 24 hr time component
- *?  used for comparison. 
+
+ /**========================================================================
+  **                           convStartEndTime24
+ *?  convert 2 string elements in passed array to number representing
+ *?  24 hr time component to be used for comparison. 
  *@param arr array object from match()
  *@return null
- *=============================================**/
+  *========================================================================**/
 
 function convStartEndTime24hr(arr) {
   arr[2] = (/^[1-9][01]?pm$/.test(arr[2]))? +(arr[2]).match(/\d+/) + 12: +arr[2].match(/\d+/);
   arr[3] = (/^[1-9][01]?pm$/.test(arr[3]))? +(arr[3]).match(/\d+/) + 12: +arr[3].match(/\d+/);
 }
 
-/**==============================================
- **              clearDisaledActivities
- *?  Reset the displayed attributes of the
- *?  activites area in order set via to user response.
+/**========================================================================
+ **                           clearDisaledActivities
+ *?  Reset the displayed attributes of the activites area in order set via
+ *?  to user response.
  *@param node NODECollection input elements
  *@return null
- *=============================================**/
+ *========================================================================**/
 
 function clearDisabledActivities(node) {
   node.forEach((v) => {
@@ -160,14 +167,13 @@ function clearDisabledActivities(node) {
    });
 }
 
-/**----------------------------------------------
- * *                   Activities Fieldset
- *  EventListener for 'change' will disable activities
- *  with conflicting running times and update the 
- *  displayed dollar cost. Start/End times are read
- *  from the html and split via regexp then compared
- *  to determing conflict
- *---------------------------------------------**/
+/**------------------------------------------------------------------------
+ * *                         Activities Fieldset
+ *  EventListener for 'change' will disable activities with conflicting
+ *  running times and update the displayed dollar cost. Start/End times are
+ *  read from the html and split via regexp then compared to determing
+ *  conflict
+ *------------------------------------------------------------------------**/
 
 activitiesFieldset.addEventListener('change', (e) => {
   const fieldset = e.currentTarget;
@@ -210,12 +216,11 @@ activitiesFieldset.addEventListener('change', (e) => {
     }
   });
 
-/**----------------------------------------------
- * *                   Activites Cost
- *   Adjust the reported cost in activities total
- *   display in $. Will update to user's activity
- *   choices.
- *---------------------------------------------**/
+/**------------------------------------------------------------------------
+ * *                         Activites Cost
+ *   Adjust the reported cost in activities total display in $. Will update
+ *   to user's activity choices.
+ *------------------------------------------------------------------------**/
 
   const activitiesCostSpan = activitiesFieldset.querySelector('#activities-cost');
   const activitiesTotal = Object.entries(activitiesIn).reduce((acc,v) => 
@@ -223,14 +228,13 @@ activitiesFieldset.addEventListener('change', (e) => {
   activitiesCostSpan.textContent = `Total: $${activitiesTotal}`;
 });
 
-/**==============================================
- **              focusActivityLabels
- *?  EventListner callback. Add/remove focus
- *?  classList to selected activity depending
- *?  on called focus/blur event.
+/**========================================================================
+ **                        focusActivityLabels
+ *?  EventListner callback. Add/remove focus classList to selected
+ *?  activity depending on called focus/blur event.
  *@param e focus or blur event
  *@return null
- *=============================================**/
+ *========================================================================**/
 
 function focusActivityLabels(e) {
   (e.type === 'focus') 
@@ -242,17 +246,15 @@ function focusActivityLabels(e) {
   checkEles.forEach((v) => v.addEventListener('focus', focusActivityLabels));
   checkEles.forEach((v) => v.addEventListener('blur', focusActivityLabels));
 
-/**==============================================
- **              isMthYr
- *?  This function is outside of Project's required
- *?  instructions!! It will make the Credit Card
- *?  Month and Year selectors required behaviours
- *?  for final form submission. This function will
- *?  add/remove valid/not-valid classLists depending
- *?  on whether options have been chosen. 
+/**========================================================================
+ **                           isMthYr
+ *?  This function is outside of Project's required instructions!! It will
+ *?  make the Credit Card Month and Year selectors required behaviours for
+ *?  final form submission. This function will add/remove valid/not-valid
+ *?  classLists depending on whether options have been chosen. 
  *@param e change event
  *@return null
- *=============================================**/
+ *========================================================================**/
 
 function isMthYr(e) {
   const select = e.currentTarget;
@@ -268,17 +270,14 @@ document.querySelector('#exp-month').addEventListener('change', isMthYr);
 document.querySelector('#exp-year').addEventListener('change', isMthYr);
 
 
-
-/**==============================================
- **              toggleHint
- *?  callback function for 'input' event on input
- *?  elements. Will get info from helperHints array
- *?  and process associated element. Will alter
- *?  display properties and live-check input for
- *?  required inputs
+/**========================================================================
+ **                           toggleHint
+ *?  callback function for 'input' event on input elements. Will get info
+ *?  from helperHints array and process associated element. Will alter
+ *?  display properties and live-check input for required inputs
  *@param e input event
  *@return null
- *=============================================**/
+ *========================================================================**/
 
 function toggleHint(e) {
   if(e.keyCode === 9) return false;
