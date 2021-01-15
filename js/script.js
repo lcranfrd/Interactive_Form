@@ -23,21 +23,24 @@ const helperHints = [
     id: 'name',
     type: 'input',
     hintId: 'name-hint',
-    textContent: 'Please enter First Name and Last Name (last name hyphen accepted)',
+    liveCheckTextContent: 'Please enter First Name and Last Name (last name hyphen accepted)',
+    validateTextContent: 'Name field cannot be blank',
     regExp: /^([a-zA-Z-]+)( [a-zA-Z]{2,})(-[a-zA-Z]{2,})?$/i
   },
   {
     id: 'email',
     type: 'input',
     hintId: 'email-hint',
-    textContent: 'Please enter well formated Email: user@domain.com',
+    liveCheckTextContent: 'Please enter well formated Email ex: user@domain.com',
+    validateTextContent: 'Email address must be formatted correctly',
     regExp: /^[\w+-]+(\.[\w]+)*@[\w-]+\.\w{2,4}$/i
   },
   {
     id: 'activities',
     type: 'checkbox',
     hintId: 'activities-hint',
-    textContent: 'Choose at least one activity',
+    liveCheckTextContent: 'Choose at least one activity',
+    validateTextContent: 'Choose at least one activity',
     regExp: /\d+/
   },
   {
@@ -54,21 +57,24 @@ const helperHints = [
     id: 'cc-num',
     type: 'input',
     hintId: 'cc-hint',
-    textContent: 'Number must be 13 to 16 digits in length. Spaces and dashes are permitted',
+    liveCheckTextContent: 'Number must be 13 - 16 digits in length. Spaces and dashes are permitted',
+    validateTextContent: 'Credit card number must be between 13 - 16 digits',
     regExp: /^\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{1,4}$/
   },
   {
     id: 'zip',
     type: 'input',
     hintId: 'zip-hint',
-    textContent: 'Zip Code must contain 5 digits',
+    tliveCheckTextContent: 'Zip Code must contain 5 digits',
+    validateTextContent: 'Zip Code must contain 5 digits',
     regExp: /^\d{5}$/
   },
   {
     id: 'cvv',
     type: 'input',
     hintId: 'cvv-hint',
-    textContent: 'CVV must contain 3 digits',
+    liveCheckTextContent: 'CVV must contain 3 digits',
+    validateTextContent: 'CVV must contain 3 digits',
     regExp: /^\d{3}$/
   }
 ];
@@ -274,7 +280,7 @@ document.querySelector('#exp-year').addEventListener('change', isMthYr);
  **                           toggleHint
  *?  callback function for 'input' event on input elements. Will get info
  *?  from helperHints array and process associated element. Will alter
- *?  display properties and live-check input for required inputs
+ *?  display properties and live-check (Exceeds Expectations) input for required inputs
  *@param e input event
  *@return null
  *========================================================================**/
@@ -295,7 +301,7 @@ function toggleHint(e) {
     }
   } else {
     if(hintEle) {
-      hintEle.textContent = hintObj.textContent;
+      hintEle.textContent = hintObj.liveCheckTextContent;
       hintEle.parentElement.classList.add('not-valid');
       hintEle.parentElement.classList.remove('valid');
       e.currentTarget.classList.add('error');
@@ -339,8 +345,8 @@ function processForm(e) {
       case 'input':
         const input = document.querySelector(`#${v.id}`);
         if(!v.regExp.test(input.value)) {
-          hintEle.textContent = v.id.textContent;
-          hintEle.style.display = '';
+          hintEle.textContent = v.validateTextContent;
+          hintEle.style.display = 'inherit';
           input.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
           e.preventDefault();
@@ -353,8 +359,8 @@ function processForm(e) {
         const fieldset = document.querySelector(`#${v.id}`);
         const checkBoxes = fieldset.querySelectorAll('[type="checkbox"]');
         if(!(Object.entries(checkBoxes).some((v) => v[1].checked))) {
-          hintEle.textContent = v.id.textContent;
-          hintEle.style.display = '';
+          hintEle.textContent = v.validateTextContent;
+          hintEle.style.display = 'inherit';
           fieldset.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
           e.preventDefault();
