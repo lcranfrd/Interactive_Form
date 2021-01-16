@@ -342,7 +342,9 @@ helperHints.forEach((v) => {
   *========================================================================**/
 
 function processForm(e) {
-  const isFormValid = helperHints.every((v) => {
+  let goToFocusElement = '';
+  let isFormValid = true;
+  helperHints.forEach((v) => {
     const paymentMethIndx = document.querySelector('#payment').selectedIndex;
     const hintEle = document.querySelector(`#${v.hintId}`);
     switch(v.type) {
@@ -354,12 +356,12 @@ function processForm(e) {
             hintEle.style.display = 'inherit';
             input.classList.add('error');
             hintEle.parentElement.classList.add('not-valid');
-            e.preventDefault();
-            input.focus();
-            return false;
+            goToFocusElement = (goToFocusElement === '')
+              ? () => input.focus()
+              : goToFocusElement;
+            isFormValid = false;
           }
         }
-        return true;
       break;
       case 'checkbox':
         const fieldset = document.querySelector(`#${v.id}`);
@@ -369,11 +371,11 @@ function processForm(e) {
           hintEle.style.display = 'inherit';
           fieldset.classList.add('error');
           hintEle.parentElement.classList.add('not-valid');
-          e.preventDefault();
-          checkBoxes[0].focus();
-          return false;
+          goToFocusElement = (goToFocusElement === '')
+            ? () => checkBoxes[0].focus()
+            : goToFocusElement;
+          isFormValid = false;
         }
-        return true;
       break;
       case 'select':
         const select = document.querySelector(`#${v.id}`);
@@ -381,15 +383,23 @@ function processForm(e) {
           if(select.selectedIndex <= 0) {
             select.classList.add('error');
             select.parentElement.classList.add('not-valid');
-            e.preventDefault();
-            select.focus();
-            return false
+            // e.preventDefault();
+            goToFocusElement = (goToFocusElement === '')
+              ? () => select.focus()
+              : goToFocusElement;
+            isFormValid = false;
           }
         }
-        return true;
       break;
     }
   });
+  if(isFormValid) {
+    return true;
+  } else {
+    e.preventDefault();
+    goToFocusElement();
+    return false;
+  }
   return (isFormValid)? true: false;
 }
 
