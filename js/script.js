@@ -127,7 +127,7 @@ function setPaymentMeth(obj) {
 paymentSel.addEventListener('change', setPaymentMeth);
 
 /**------------------------------------------------------------------------
- * *                   Job Role and T-Shirt Info Behavious
+ * *                   Job Role and T-Shirt Info Behaviours
  *------------------------------------------------------------------------**/
 
 titleSel.addEventListener('change', (e) => {
@@ -144,7 +144,7 @@ shirtDesignSel.addEventListener('change', (e) => {
 });
 
 /**------------------------------------------------------------------------
- **                       Set Behavious for Activites
+ **                       Set Behaviours for Activites
  *------------------------------------------------------------------------**/  
 
 
@@ -239,8 +239,8 @@ activitiesFieldset.addEventListener('change', (e) => {
 
 /**========================================================================
  **                        focusActivityLabels
- *?  EventListner callback. Add/remove focus classList to selected
- *?  activity depending on called focus/blur event.
+ *?  Callback forcheckbox elements eventListener. Add/remove focus
+ *?  classList to selected activity depending on called focus/blur event.
  *@param e focus or blur event
  *@return null
  *========================================================================**/
@@ -281,7 +281,7 @@ document.querySelector('#exp-year').addEventListener('change', isMthYr);
 
 /**========================================================================
  **                           toggleHint
- *?  callback function for 'input' event on input elements. Will get info
+ *?  Callback function for 'input' event on input elements. Will get info
  *?  from helperHints array and process associated element. Will alter
  *?  display properties and live-check (Exceeds Expectations) input for required inputs
  *@param e input event
@@ -331,7 +331,7 @@ helperHints.forEach((v) => {
 
  /**========================================================================
   **                           processForm
-  *?  main form process function. Input elements are processed by
+  *?  Main form process function. Input elements are processed by
   *?  type(input, checkbox, select). Each type has information in the
   *?  helperHints array to make validation and will return with focus on
   *?  the failed validation with the appropriate element with a preventDefault.
