@@ -12,10 +12,10 @@
 
 /**------------------------------------------------------------------------
  * *                                HelperHints
- *   array of objects used to set helper hints and validate form submission.
- *   Its types are determined through the required form input types. Those
- *   that have cooresponding hints will have rexexp values and textContent
- *   for input validation and hint display.
+ *   Array of objects used to set helper hints and validate form
+ *   submission. Its types are determined through the required form input
+ *   types. Those that have cooresponding hints will have rexexp values
+ *   and textContent for input validation and hint display.
  *------------------------------------------------------------------------**/
 
 const helperHints = [
@@ -105,10 +105,10 @@ setPaymentMeth(creditPayOpt);
 
 /**========================================================================
  **                           setPaymentMeth
- *?  Will set the default behaviour of the Payment Methods.
+ *?  Will set the default behaviour of the Payment Methods as default.
  *?  Will show the elements associated with the users choice.
  *?  Function will be first called with a default setting after which
- *?  will be called by eventListen change on the payment Selector
+ *?  will be called by eventListener change on the payment Selector
  *@param obj HTMLElement value 
  *@return null
  *========================================================================**/
@@ -150,8 +150,8 @@ shirtDesignSel.addEventListener('change', (e) => {
 
  /**========================================================================
   **                           convStartEndTime24
- *?  convert 2 string elements in passed array to number representing
- *?  24 hr time component to be used for comparison. 
+ *?  Convert two(start/end time) string elements in passed array to number
+ *?  representing 24 hr time component to be used for comparison. 
  *@param arr array object from match()
  *@return null
   *========================================================================**/
@@ -163,8 +163,8 @@ function convStartEndTime24hr(arr) {
 
 /**========================================================================
  **                           clearDisaledActivities
- *?  Reset the displayed attributes of the activites area in order set via
- *?  to user response.
+ *?  Reset(turn off) the displayed attributes of the activites area in
+ *?  order set via user response.
  *@param node NODECollection input elements
  *@return null
  *========================================================================**/
@@ -239,7 +239,7 @@ activitiesFieldset.addEventListener('change', (e) => {
 
 /**========================================================================
  **                        focusActivityLabels
- *?  Callback forcheckbox elements eventListener. Add/remove focus
+ *?  Callback for checkbox elements' eventListener. Add/remove focus
  *?  classList to selected activity depending on called focus/blur event.
  *@param e focus or blur event
  *@return null
@@ -268,7 +268,7 @@ function focusActivityLabels(e) {
 function isMthYr(e) {
   const select = e.currentTarget;
   const isSelected = select.selectedIndex;
-  const selParent = select.parentElement;
+  const selParent = select.previousElementSibling;
   if(isSelected > 0) {
     select.classList.remove('error');
     selParent.classList.remove('not-valid');
@@ -283,7 +283,8 @@ document.querySelector('#exp-year').addEventListener('change', isMthYr);
  **                           toggleHint
  *?  Callback function for 'input' event on input elements. Will get info
  *?  from helperHints array and process associated element. Will alter
- *?  display properties and live-check (Exceeds Expectations) input for required inputs
+ *?  display properties and live-check (Exceeds Expectations) input for
+ *?  required inputs
  *@param e input event
  *@return null
  *========================================================================**/
@@ -299,7 +300,7 @@ function toggleHint(e) {
       e.currentTarget.classList.remove('error')
       hintEle.style.display = 'none';
     } else {
-      e.currentTarget.parentElement.classList.remove('not-valid');
+      e.currentTarget.previousElementSibling.classList.remove('not-valid');
       e.currentTarget.classList.add('error');
     }
   } else {
@@ -310,7 +311,7 @@ function toggleHint(e) {
       e.currentTarget.classList.add('error');
       hintEle.style.display = 'inherit';
     } else {
-      e.currentTarget.parentElement.classList.add('not-valid');
+      e.currentTarget.previousElementSibling.classList.add('not-valid');
       e.currentTarget.classList.remove('error');
     }
   }
@@ -318,10 +319,10 @@ function toggleHint(e) {
 
 helperHints.forEach((v) => {
   if(v.type === 'input') {
-  const input = document.querySelector(`#${v.id}`)
-  input.addEventListener('input', toggleHint);
-  input.setAttribute('autocomplete', 'off');
-}
+    const input = document.querySelector(`#${v.id}`)
+    input.addEventListener('input', toggleHint);
+    input.setAttribute('autocomplete', 'off');
+  }
 }); 
 
  /**------------------------------------------------------------------------
@@ -331,12 +332,13 @@ helperHints.forEach((v) => {
 
  /**========================================================================
   **                           processForm
-  *?  Main form process function. Input elements are processed by
-  *?  type(input, checkbox, select). Each type has information in the
-  *?  helperHints array to make validation and will return with focus on
-  *?  the failed validation with the appropriate element with a preventDefault.
-  *?  If there are no failures, fucntion will return true, therefore mimicing
-  *?  successful form submission.
+  *?  Main form process function. Input elements are processed by in
+  *?  type(input, checkbox, select). Each type's information is stored in the
+  *?  helperHints array to make validation. HelperHints will be cycled via
+  *?  foreEach(), setting the visual error cues for each faild element.
+  *?  It will also set the focus for the first failed element. 
+  *?  If there are no failures, fucntion will refresh the page via return
+  *?  true, therefore mimicing successful form submission to a server.
   *@param e submit event   
   *@return Boolean
   *========================================================================**/
@@ -382,8 +384,7 @@ function processForm(e) {
         if(paymentMethIndx === 1) {
           if(select.selectedIndex <= 0) {
             select.classList.add('error');
-            select.parentElement.classList.add('not-valid');
-            // e.preventDefault();
+            select.previousElementSibling.classList.add('not-valid');
             goToFocusElement = (goToFocusElement === '')
               ? () => select.focus()
               : goToFocusElement;
