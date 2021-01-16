@@ -56,6 +56,7 @@ const helperHints = [
   {
     id: 'cc-num',
     type: 'input',
+    card: true,
     hintId: 'cc-hint',
     liveCheckTextContent: 'Number must be 13 - 16 digits in length. Spaces and dashes are permitted',
     submitTextContent: 'Credit card number must be between 13 - 16 digits',
@@ -64,6 +65,7 @@ const helperHints = [
   {
     id: 'zip',
     type: 'input',
+    card: true,
     hintId: 'zip-hint',
     tliveCheckTextContent: 'Zip Code must contain 5 digits',
     submitTextContent: 'Zip Code must contain 5 digits',
@@ -72,6 +74,7 @@ const helperHints = [
   {
     id: 'cvv',
     type: 'input',
+    card: true,
     hintId: 'cvv-hint',
     liveCheckTextContent: 'CVV must contain 3 digits',
     submitTextContent: 'CVV must contain 3 digits',
@@ -340,18 +343,21 @@ helperHints.forEach((v) => {
 
 function processForm(e) {
   const isFormValid = helperHints.every((v) => {
+    const paymentMethIndx = document.querySelector('#payment').selectedIndex;
     const hintEle = document.querySelector(`#${v.hintId}`);
     switch(v.type) {
       case 'input':
         const input = document.querySelector(`#${v.id}`);
-        if(!v.regExp.test(input.value)) {
-          hintEle.textContent = v.submitTextContent;
-          hintEle.style.display = 'inherit';
-          input.classList.add('error');
-          hintEle.parentElement.classList.add('not-valid');
-          e.preventDefault();
-          input.focus();
-          return false;
+        if(!(paymentMethIndx > 1 &&  v.card !== undefined)) {
+          if(!v.regExp.test(input.value)) {
+            hintEle.textContent = v.submitTextContent;
+            hintEle.style.display = 'inherit';
+            input.classList.add('error');
+            hintEle.parentElement.classList.add('not-valid');
+            e.preventDefault();
+            input.focus();
+            return false;
+          }
         }
         return true;
       break;
@@ -370,7 +376,6 @@ function processForm(e) {
         return true;
       break;
       case 'select':
-        const paymentMethIndx = document.querySelector('#payment').selectedIndex;
         const select = document.querySelector(`#${v.id}`);
         if(paymentMethIndx === 1) {
           if(select.selectedIndex <= 0) {
